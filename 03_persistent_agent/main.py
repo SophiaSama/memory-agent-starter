@@ -134,6 +134,7 @@ async def main():
                 
                 if text:
                     # TODO: Extract content from the OLD session
+
             except Exception as e:
                 print(f"Error parsing event: {e}")
 
@@ -147,6 +148,7 @@ async def main():
     # 4. Inject the context into the FIRST query of the new session
     # We explicitly tell the agent: "Here is what we know from a past trip..."
     # TODO: Manually inject the context to the query
+    
     
     await run_agent_query(root_agent, query_3, new_session, "user_01", session_service)
 

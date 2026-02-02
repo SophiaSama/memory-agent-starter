@@ -9,4 +9,5 @@ load_dotenv()
 
 # TODO: Create a root agent
 
+
 print(f"🗺️ Agent '{root_agent.name}' is created and ready to plan and adapt!")

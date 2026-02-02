@@ -41,7 +41,9 @@ AGENT_NAME = "trip_agent"
 
 # TODO: Configure Memory Bank Topic
 
+
 # TODO: Configure Memory Bank Customization
+
 
 def get_or_create_agent_engine():
     # Check if agent engine exists
@@ -82,6 +84,7 @@ agent_engine_id = agent_engine.api_resource.name.split("/")[-1]
 print(f"Agent Engine ID: {agent_engine_id}")
 
 # TODO create session service and memory service
+
 
 APP_NAME = root_agent.name
 runner = Runner(
@@ -168,6 +171,8 @@ async def test_trip_planner():
         app_name=APP_NAME, user_id=USER_ID, session_id=session.id
     )
     # TODO: create memory from session
+    
+
     print("✅ Full conversation context (Image, Video, Audio) saved to Memory Bank.")
     print("---------------------------------------------------")
 

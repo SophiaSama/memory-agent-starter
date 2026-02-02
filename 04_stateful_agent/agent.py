@@ -66,5 +66,6 @@ root_agent = LlmAgent(
     instruction=get_planner_instruction,
     sub_agents=[museum_agent, restaurant_agent, outdoor_agent],
     # TODO: add callback to root agent
+    
 )
 print("🎩 The Master Planner is ready.")

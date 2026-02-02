@@ -85,6 +85,7 @@ async def run_trip_different_session_scenario(session_service: InMemorySessionSe
     tokyo_session_2 = None
     # TODO: create a different session to test
 
+
     query2 = "That sounds pretty good, do you remember what I liked about the food?"
     print(f"\n🗣️ User (Turn 2): '{query2}'")
     await run_agent_query(multi_day_agent, query2, tokyo_session_2, user_id, session_service)
