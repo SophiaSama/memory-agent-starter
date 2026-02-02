@@ -1,0 +1,8 @@
+.env
+.venv
+*.lock
+__pycache__/
+*.pyc
+.DS_Store
+*.db
+tutorial_section_*.md

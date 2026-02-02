@@ -1,0 +1,29 @@
+from dotenv import load_dotenv
+from google.adk.agents import LlmAgent
+# REPLACE ME: add imports
+try:
+    from .tools import budget_tool
+except ImportError:
+    from tools import budget_tool
+
+load_dotenv()
+
+root_agent = LlmAgent(
+    model="gemini-2.5-flash",
+    name="TripPlanner",
+    instruction="""You are an advanced trip planning assistant with memory and tools.
+
+    Your capabilities:
+    - Access to user's complete travel history through memories
+    - Use 'calculate_trip_budget' to provide cost estimates
+    - Remember all conversations and preferences
+
+    Tool usage guidelines:
+    - Always mention what memories influenced your suggestions
+    - After providing budget, ask if they want adjustments
+
+    Be personal and reference specific past experiences when available.
+    If not available, just keep talking with the user. Don't make up facts.
+    """,
+    # REPLACE ME: add tools to root agent
+)
