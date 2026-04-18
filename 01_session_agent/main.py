@@ -86,7 +86,8 @@ async def run_trip_different_session_scenario(session_service: InMemorySessionSe
     print(f"\n🗣️ User (Turn 1): '{query1}'")
     await run_agent_query(multi_day_agent, query1, tokyo_session, user_id, session_service)
 
-    tokyo_session_2 = None
+    #tokyo_session_2 = None
+    # Create a NEW session for a re-visit
     tokyo_session_2 = await session_service.create_session(
         app_name=multi_day_agent.name,
         user_id=user_id

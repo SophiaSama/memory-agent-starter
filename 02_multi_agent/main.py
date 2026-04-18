@@ -57,7 +57,7 @@ async def run_sequential_workflow():
     my_user_id = "adk_adventurer_002"
 
     # The query contains all the information needed for the entire sequence.
-    query = "Find me the best sushi restaurant in Palo Alto, and then tell me how to get there from the downtown Caltrain station."
+    query = "Find me the best sushi restaurant in Singapore, and then tell me how to get there from Science Park 1."
 
     print(f"\n{'='*60}\n🗣️  Processing Query: '{query}'\n{'='*60}")
     print(f"🚀 Handing off the entire task to the '{root_agent.name}'...")

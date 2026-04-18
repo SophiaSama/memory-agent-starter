@@ -1,10 +1,4 @@
-# Environment Variables
 .env
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
 .venv
 *.lock
 __pycache__/
@@ -12,6 +6,3 @@ __pycache__/
 .DS_Store
 *.db
 tutorial_section_*.md
-venv/
-ENV/
-.pytest_cache/
