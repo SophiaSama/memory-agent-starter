@@ -1,13 +1,14 @@
 from dotenv import load_dotenv
 from google.adk.agents import LlmAgent
-# REPLACE ME: add imports
+from google.adk.tools.preload_memory_tool import PreloadMemoryTool
+
 
 try:
     from .tools import budget_tool
 except ImportError:
     from tools import budget_tool
 
-load_dotenv()
+load_dotenv(override=True)
 
 root_agent = LlmAgent(
     model="gemini-2.5-flash",
@@ -26,6 +27,6 @@ root_agent = LlmAgent(
     Be personal and reference specific past experiences when available.
     If not available, just keep talking with the user. Don't make up facts.
     """,
-    # REPLACE ME: add tools to root agent
+    tools=[PreloadMemoryTool(), budget_tool]
 
 )

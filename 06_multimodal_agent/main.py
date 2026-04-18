@@ -39,10 +39,71 @@ client = vertexai.Client(project=PROJECT_ID, location=LOCATION)
 
 AGENT_NAME = "trip_agent"
 
-# TODO: Configure Memory Bank Topic
+# Configure Memory Bank Topic
+travel_topics = [
+    MemoryTopic(
+        managed_memory_topic=ManagedMemoryTopic(
+            managed_topic_enum=ManagedTopicEnum.USER_PREFERENCES
+        )
+    ),
+    MemoryTopic(
+        managed_memory_topic=ManagedMemoryTopic(
+            managed_topic_enum=ManagedTopicEnum.USER_PERSONAL_INFO
+        )
+    ),
+    MemoryTopic(
+        custom_memory_topic=CustomMemoryTopic(
+            label="travel_experiences",
+            description="""Memorable travel experiences including:
+                - Places visited and impressions
+                - Favorite restaurants, cafes, and food experiences
+                - Preferred accommodation types and locations
+                - Activities enjoyed (museums, hiking, beaches, etc.)
+                - Travel companions and social preferences
+                - Photos and videos from trips with location context""",
+        )
+    ),
+    MemoryTopic(
+        custom_memory_topic=CustomMemoryTopic(
+            label="travel_preferences",
+            description="""Travel style and preferences:
+                - Budget preferences (luxury, mid-range, budget)
+                - Transportation preferences (flying, trains, driving)
+                - Trip duration preferences
+                - Season and weather preferences
+                - Cultural interests and language abilities
+                - Dietary restrictions and food preferences""",
+        )
+    ),
+    MemoryTopic(
+        custom_memory_topic=CustomMemoryTopic(
+            label="travel_logistics",
+            description="""Practical travel information:
+                - Passport and visa information
+                - Frequent flyer numbers and hotel loyalty programs
+                - Emergency contacts
+                - Medical considerations and insurance
+                - Packing preferences and essentials
+                - Time zone preferences and jet lag strategies""",
+        )
+    ),
+]
 
 
-# TODO: Configure Memory Bank Customization
+# Configure Memory Bank Customization
+memory_bank_config = {
+    "customization_configs": [
+        {
+            "memory_topics": travel_topics,
+        }
+    ],
+    "similarity_search_config": {
+        "embedding_model": f"projects/{PROJECT_ID}/locations/{LOCATION}/publishers/google/models/gemini-embedding-001"
+    },
+    "generation_config": {
+        "model": f"projects/{PROJECT_ID}/locations/{LOCATION}/publishers/google/models/gemini-2.5-flash"
+    },
+}
 
 
 def get_or_create_agent_engine():
@@ -83,8 +144,13 @@ agent_engine = get_or_create_agent_engine()
 agent_engine_id = agent_engine.api_resource.name.split("/")[-1]
 print(f"Agent Engine ID: {agent_engine_id}")
 
-# TODO create session service and memory service
-
+# create session service and memory service
+session_service = VertexAiSessionService(
+    project=PROJECT_ID, location=LOCATION, agent_engine_id=agent_engine_id
+)
+memory_service = VertexAiMemoryBankService(
+    project=PROJECT_ID, location=LOCATION, agent_engine_id=agent_engine_id
+)
 
 APP_NAME = root_agent.name
 runner = Runner(
@@ -97,7 +163,9 @@ runner = Runner(
 def call_agent(runner: Runner, content: types.Content, session_id: str, user_id: str):
     """Calls the agent and prints the final response."""
     print(f"\n--- User ({user_id}) ---")
-    # print(content) # Debug
+    print(f"\n--- Session {session_id} ---")
+    print(f"\n--- Content ---")
+    print(content) # Debug
     
     events = runner.run(user_id=user_id, session_id=session_id, new_message=content)
 
@@ -170,8 +238,8 @@ async def test_trip_planner():
     final_session_state = await session_service.get_session(
         app_name=APP_NAME, user_id=USER_ID, session_id=session.id
     )
-    # TODO: create memory from session
-    
+    # create memory from session
+    await memory_service.add_session_to_memory(final_session_state)
 
     print("✅ Full conversation context (Image, Video, Audio) saved to Memory Bank.")
     print("---------------------------------------------------")
@@ -191,7 +259,7 @@ async def test_trip_planner():
         role="user",
         parts=[
             {
-                "text": "Based on the picture, video, AND audio I shared with you before, suggest a cultural destination for me."
+                "text": "Based on the picture, video, AND audio I shared with you before, suggest a different cultural destination for me."
             }
         ],
     )
