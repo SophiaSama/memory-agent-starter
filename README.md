@@ -1,5 +1,16 @@
-A training privided by Annie Wang from Google which show cases how an AI agent can memorise users' preference in past sessions.
-Experients performed using Google ADK.
+A training privided by Google which show cases how an AI agent can memorise users' preference in past sessions.
+Experiments performed using Google ADK with various scenarios utilising techniques such as tool calling, agent handoff, database persistance, preload memories:
+- Session & State
+
+- Multi-Agent State
+
+- Persistence
+
+- Callbacks
+
+- Custom Tools
+
+- Multimodal Memory
 
 ## Issue Found
 I noticed when using The PreloadMemoryTool, the tool is designed to retrieve data from a database and inject it into the System Instructions as text before the turn starts. 
