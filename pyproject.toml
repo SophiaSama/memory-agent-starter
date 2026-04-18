@@ -5,8 +5,11 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "aiosqlite>=0.22.1",
     "google-adk>=1.18.0",
     "google-cloud-aiplatform>=1.127.0",
     "google-genai>=1.50.1",
+    "pydantic>=2.0.0",
     "python-dotenv>=1.2.1",
+    "sqlalchemy[asyncio]>=2.0.49",
 ]

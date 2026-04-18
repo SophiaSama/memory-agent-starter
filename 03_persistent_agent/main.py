@@ -14,7 +14,11 @@ from google.adk.runners import Runner
 from google.adk.sessions import Session, DatabaseSessionService
 from agent import root_agent
 
-# TODO: Configuration for Persistent Sessions
+# Configuration for Persistent Sessions
+SESSIONS_DIR = Path(os.path.expanduser("~")) / ".adk_codelab" / "sessions"
+os.makedirs(SESSIONS_DIR, exist_ok=True)
+SESSION_DB_FILE = SESSIONS_DIR / "trip_planner.db"
+SESSION_URL = f"sqlite+aiosqlite:///{SESSION_DB_FILE.absolute()}"
 
 # --- A Helper Function to Run Our Agents ---
 async def run_agent_query(agent: Agent, query: str, session: Session, user_id: str, session_service: DatabaseSessionService, is_router: bool = False):
@@ -54,6 +58,8 @@ async def run_agent_query(agent: Agent, query: str, session: Session, user_id: s
 async def main():
     # REPLACE ME: Create a database session servic
     
+    session_service = DatabaseSessionService(SESSION_URL)
+
     # --- Test Case 1: New Session ---
     print("\n" + "="*50)
     print("TEST CASE 1: New Session (Setting Context)")
@@ -78,7 +84,7 @@ async def main():
         print(f"Resumed existing session: {session_id}")
 
     # Turn 1: Tell the agent something about ourselves
-    query_1 = "Hi! I'm planning a trip to Tokyo. I love ramen and I'm a vegetarian."
+    query_1 = "Hi! I'm planning a trip to Tokyo. I love ramen and meat, but I am allergic to shells."
     await run_agent_query(root_agent, query_1, session, "user_01", session_service)
 
     # --- Test Case 2: Resume Session ---
@@ -109,7 +115,10 @@ async def main():
     new_session_id = "my_second_trip"
     print(f"Starting NEW session: {new_session_id}")
     
-    # TODO: retrieve the previous session manually
+    # retrieve the previous session manually
+    old_session = await session_service.get_session(
+        app_name=root_agent.name, user_id="user_01", session_id=session_id
+    )
     
     # 2. Extract relevant info (naive approach: get all user/model turns)
     # In a real app, you might use an LLM to summarize this, or filter for specific 'preferences'.
@@ -133,7 +142,8 @@ async def main():
                      text = " ".join([p.text for p in event.content.parts if hasattr(p, 'text')])
                 
                 if text:
-                    # TODO: Extract content from the OLD session
+                    # Extract content from the OLD session
+                    previous_context += f" - {role}: {text}\n"
 
             except Exception as e:
                 print(f"Error parsing event: {e}")
@@ -147,8 +157,13 @@ async def main():
     
     # 4. Inject the context into the FIRST query of the new session
     # We explicitly tell the agent: "Here is what we know from a past trip..."
-    # TODO: Manually inject the context to the query
-    
+    # Simulate user comes back after some time: Manually inject the context to the query
+    query_3 = f"""
+    {previous_context}
+
+    I'm planning a new trip to Osaka this time. 
+    Based on my previous preferences (above), what should I eat?
+    """
     
     await run_agent_query(root_agent, query_3, new_session, "user_01", session_service)
 
