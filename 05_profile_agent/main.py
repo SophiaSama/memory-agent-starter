@@ -61,12 +61,12 @@ async def main():
     )
 
     # Turn 1: Tell the agent a preference
-    query1 = "I am allergic to peanuts. Please remember that."
+    query1 = "I like sour things. Please remember that."
     print(f"\n🗣️ TURN 1 (Setting Preference): '{query1}'")
     await run_agent_query(root_agent, query1, session, my_user_id, session_service)
 
     # Turn 2: Ask for a recommendation that requires recalling the preference
-    query2 = "Suggest a snack for me."
+    query2 = "Suggest 3 types of snacks for me."
     print(f"\n🗣️ TURN 2 (Recalling Preference): '{query2}'")
     await run_agent_query(root_agent, query2, session, my_user_id, session_service)
 
