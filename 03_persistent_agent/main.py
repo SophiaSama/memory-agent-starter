@@ -2,12 +2,7 @@ import asyncio
 import sys
 import os
 from pathlib import Path
-
-# Add the current directory to sys.path to ensure we can import agent.py
-current_dir = os.path.dirname(os.path.abspath(__file__))
-if current_dir not in sys.path:
-    sys.path.append(current_dir)
-
+import uuid
 from google.adk.agents import Agent
 from google.genai import types
 from google.adk.runners import Runner
@@ -15,6 +10,7 @@ from google.adk.sessions import Session, DatabaseSessionService
 from agent import root_agent
 
 # Configuration for Persistent Sessions
+# Yes this location is hard coded
 SESSIONS_DIR = Path(os.path.expanduser("~")) / ".adk_codelab" / "sessions"
 os.makedirs(SESSIONS_DIR, exist_ok=True)
 SESSION_DB_FILE = SESSIONS_DIR / "trip_planner.db"
@@ -65,7 +61,7 @@ async def main():
     print("TEST CASE 1: New Session (Setting Context)")
     print("="*50)
     
-    session_id = "my_persistent_trip" 
+    session_id = f"trip_{uuid.uuid4().hex[:8]}" 
     
     # Ensure we start fresh for this test by creating a new session if needed, 
     # or just using the existing one but acknowledging we are 'starting' a flow.
@@ -112,7 +108,7 @@ async def main():
     # Scenario: User starts a completely NEW trip (new session ID) but wants to reference 
     # preferences from the previous trip ("my_persistent_trip").
     
-    new_session_id = "my_second_trip"
+    new_session_id = f"trip_new_{uuid.uuid4().hex[:8]}"
     print(f"Starting NEW session: {new_session_id}")
     
     # retrieve the previous session manually
@@ -150,11 +146,11 @@ async def main():
 
     print(f"Extracted Context:\n{previous_context}")
 
-    # 3. Create the NEW session
+    # 3. Create the NEW session if session does not exist
     new_session = await session_service.create_session(
         app_name=root_agent.name, user_id="user_01", session_id=new_session_id
     )
-    
+
     # 4. Inject the context into the FIRST query of the new session
     # We explicitly tell the agent: "Here is what we know from a past trip..."
     # Simulate user comes back after some time: Manually inject the context to the query
