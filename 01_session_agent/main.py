@@ -19,7 +19,11 @@ async def run_agent_query(agent: Agent, query: str, session: Session, user_id: s
     """Initializes a runner and executes a query for a given agent and session."""
     print(f"\n🚀 Running query for agent: '{agent.name}' in session: '{session.id}'...")
 
-    # TODO: Create a runner with in memorysession service
+    runner = Runner(
+        agent=agent,
+        session_service=session_service,
+        app_name=agent.name
+    )
 
     final_response = ""
     try:
@@ -83,7 +87,10 @@ async def run_trip_different_session_scenario(session_service: InMemorySessionSe
     await run_agent_query(multi_day_agent, query1, tokyo_session, user_id, session_service)
 
     tokyo_session_2 = None
-    # TODO: create a different session to test
+    tokyo_session_2 = await session_service.create_session(
+        app_name=multi_day_agent.name,
+        user_id=user_id
+    )
 
 
     query2 = "That sounds pretty good, do you remember what I liked about the food?"
