@@ -29,7 +29,39 @@ print("✅ Specialist agents are ready to plan!")
 from typing import Dict, Any, Optional
 from google.adk.tools import ToolContext
 
-# TODO: Implement call back logic
+# call back logic to update activity
+def save_activity_type_callback(
+    tool,
+    args: Dict[str, Any],
+    tool_context: ToolContext,
+    tool_response: Dict[str, Any],
+) -> Optional[Dict[str, Any]]:
+    """
+    Callback to save the TYPE of activity just planned into the session state.
+    """
+    # 1. Get the actual agent name.
+    if tool.name == "transfer_to_agent":
+         agent_name = args.get("agent_name")
+    else:
+         agent_name = tool.name
+
+    activity_type = "unknown"
+
+    # 2. Determine the type based on which agent was actually used
+    if agent_name == "museum_expert":
+        activity_type = "CULTURAL"
+    elif agent_name == "restaurant_expert":
+        activity_type = "FOOD"
+    elif agent_name == "outdoor_expert":
+        activity_type = "OUTDOOR"
+
+    print(f"\n🔔 [CALLBACK] The planner transferred to '{agent_name}'.")
+
+    # 3. Update the state directly
+    tool_context.state["last_activity_type"] = activity_type
+    print(f"💾 [STATE UPDATE] 'last_activity_type' is now set to: {activity_type}\n")
+
+    return tool_response
 
 def get_planner_instruction(context: ToolContext) -> str:
     """
@@ -65,7 +97,8 @@ root_agent = LlmAgent(
     model="gemini-2.5-flash",
     instruction=get_planner_instruction,
     sub_agents=[museum_agent, restaurant_agent, outdoor_agent],
-    # TODO: add callback to root agent
+    # add callback to root agent
+    after_tool_callback=save_activity_type_callback,
     
 )
 print("🎩 The Master Planner is ready.")
