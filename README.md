@@ -15,12 +15,12 @@ Experiments performed using Google ADK with various scenarios utilising techniqu
 6. Be able to see and remember user's multimedia resource using Multimodal Memory
 
 ## Key Takeaways
-Rule #1 of Memory: Always reuse the session.id to maintain conversation context. The Session object is your agent's short-term memory buffer.
-Rule #2 of Memory: Use State to pass structured information between agents. Use output_key to write and {placeholders} to read.
-Rule #3 of Memory: Use DatabaseSessionService for production. It ensures user conversations survive server restarts and enables long-term history analysis.
-Rule #4 of Memory: Use Callbacks to automate state management. Your agent builds its own context simply by doing its job.
-Rule #5 of Memory: For complex, structured data, give your agent Read/Write Tools. Let the LLM manage its own long-term storage.
-Rule #6 of Memory: Use Vertex AI Memory Bank for the ultimate memory experience. It unifies text, images, and video into a single, searchable brain.
+- Rule #1: Always reuse the session.id to maintain conversation context. The Session object is your agent's short-term memory buffer.
+- Rule #2: Use State to pass structured information between agents. Use output_key to write and {placeholders} to read.
+- Rule #3: Use DatabaseSessionService for production. It ensures user conversations survive server restarts and enables long-term history analysis.
+- Rule #4: Use Callbacks to automate state management. Your agent builds its own context simply by doing its job.
+- Rule #5: For complex, structured data, give your agent Read/Write Tools. Let the LLM manage its own long-term storage.
+- Rule #6: Use Vertex AI Memory Bank for the ultimate memory experience. It unifies text, images, and video into a single, searchable brain.
 
 ## Issue Found
 VertexAiMemoryBankService is used to ingest and save user's past chat history into memory bank, this include multimedia resources such videos and pictures user attached.
