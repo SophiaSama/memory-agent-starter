@@ -1,18 +1,29 @@
+## Introduction
 A training privided by Google which show cases how an AI agent can memorise users' preference in past sessions.
-Experiments performed using Google ADK with various scenarios utilising techniques such as tool calling, agent handoff, database persistance, preload memories:
-- Session & State
+Experiments performed using Google ADK with various scenarios utilising techniques such as tool calling, agent handoff, database persistance, preload memories.
+## Breakdown
+1. Hold short-term memory in the same session using state
 
-- Multi-Agent State
+2. Share memories between agents using Multi-Agent State
 
-- Persistence
+3. Memory persistence using local database
 
-- Callbacks
+4. Update memory automatically using Callbacks
 
-- Custom Tools
+5. Read and write structured user profiles using Custom Tools
 
-- Multimodal Memory
+6. Be able to see and remember user's multimedia resource using Multimodal Memory
+
+## Key Takeaways
+Rule #1 of Memory: Always reuse the session.id to maintain conversation context. The Session object is your agent's short-term memory buffer.
+Rule #2 of Memory: Use State to pass structured information between agents. Use output_key to write and {placeholders} to read.
+Rule #3 of Memory: Use DatabaseSessionService for production. It ensures user conversations survive server restarts and enables long-term history analysis.
+Rule #4 of Memory: Use Callbacks to automate state management. Your agent builds its own context simply by doing its job.
+Rule #5 of Memory: For complex, structured data, give your agent Read/Write Tools. Let the LLM manage its own long-term storage.
+Rule #6 of Memory: Use Vertex AI Memory Bank for the ultimate memory experience. It unifies text, images, and video into a single, searchable brain.
 
 ## Issue Found
-I noticed when using The PreloadMemoryTool, the tool is designed to retrieve data from a database and inject it into the System Instructions as text before the turn starts. 
-The LLM reads the system prompt as text. It sees the URL for of a multimedia resource, but it cannot actively "click" or "watch" a video just because the URL is in its instructions. 
+VertexAiMemoryBankService is used to ingest and save user's past chat history into memory bank, this include multimedia resources such videos and pictures user attached.
+Multimodal memory is loaded by PreloadMemoryTool, the tool is designed to retrieve data from memory bank and inject it into the System Instructions as text before the turn starts. 
+Although with memory bank preloaded, when responding to user's question in a new session, the LLM reads does now seem to understand the video and pictures have been ingested before, but thought user wants it to access the videos and pictures through the URL provided in the past chat history.
 As a result, when asked about the video content, the agent rightly complains that it is a text model that cannot "see" the video link.
